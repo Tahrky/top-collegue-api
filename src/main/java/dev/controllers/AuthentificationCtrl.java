@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -54,34 +55,40 @@ public class AuthentificationCtrl {
 
     // Permet de s'authentifier, en générant un cookie pour maintenir la session en cours
     @PostMapping(value = "/auth")
-    public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
-	HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<>(authenticationRequest);
+    public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody InfosAuthentification authenticationRequest, HttpServletResponse response, BindingResult bindingResult) throws URISyntaxException {
+	if (bindingResult.hasErrors()) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build ();
+	}
+	else {
+	    HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<>(authenticationRequest);
 
-	RestTemplate rt = new RestTemplate();
-	ResponseEntity<String> responseFromApi = rt.exchange("http://localhost:8081/auth", HttpMethod.POST, requestEntity, String.class);
+	    RestTemplate rt = new RestTemplate();
+	    ResponseEntity<String> responseFromApi = rt.exchange("http://localhost:8081/auth", HttpMethod.POST, requestEntity, String.class);
 
-	String responseHeader = responseFromApi.getHeaders().getFirst("Set-Cookie");
+	    String responseHeader = responseFromApi.getHeaders().getFirst("Set-Cookie");
 
-	String[] cookie = responseHeader.split(";");
-	String[] cookie2 = cookie[0].split ("=");
-	String token = cookie2[1];
+	    String[] cookie = responseHeader.split(";");
+	    String[] cookie2 = cookie[0].split ("=");
+	    String token = cookie2[1];
 
-	Cookie authCookie = new Cookie(TOKEN_COOKIE, token);
-	authCookie.setHttpOnly(true);
-	authCookie.setMaxAge(EXPIRES_IN * 1000);
-	authCookie.setPath("/");
-	response.addCookie(authCookie);
+	    Cookie authCookie = new Cookie(TOKEN_COOKIE, token);
+	    authCookie.setHttpOnly(true);
+	    authCookie.setMaxAge(EXPIRES_IN * 1000);
+	    authCookie.setPath("/");
+	    response.addCookie(authCookie);
 
-	RequestEntity<?> requestEntity2 = RequestEntity
-		.get(new URI("http://localhost:8081/me2"))
-		.header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
-		.build();
+	    RequestEntity<?> requestEntity2 = RequestEntity
+		    .get(new URI("http://localhost:8081/me2"))
+		    .header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
+		    .build();
 
-	ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
-	CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
-	colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl()));
+	    ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
+	    CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
+	    colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl()));
 
-	return ResponseEntity.ok(col);
+	    return ResponseEntity.ok(col);
+	}
+
     }
 
     @GetMapping (value="/collegues")
