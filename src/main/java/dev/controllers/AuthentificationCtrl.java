@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import dev.entities.CollegueMatriculeNomPrenomsRoles;
+import dev.entities.CollegueEmailNomPrenomsPhotoUrlRoles;
 import dev.entities.InfosAuthentification;
 
 /**
@@ -44,7 +44,7 @@ public class AuthentificationCtrl {
 
     // Permet de s'authentifier, en générant un cookie pour maintenir la session en cours
     @PostMapping(value = "/auth")
-    public ResponseEntity<CollegueMatriculeNomPrenomsRoles> authenticate(@RequestBody InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
+    public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
     	HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<InfosAuthentification>(authenticationRequest);
 
         RestTemplate rt = new RestTemplate();
@@ -68,7 +68,7 @@ public class AuthentificationCtrl {
 											.header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
 											.build();
 
-		ResponseEntity<CollegueMatriculeNomPrenomsRoles> rep2 = rt.exchange(requestEntity2, CollegueMatriculeNomPrenomsRoles.class);
+		ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
 		return ResponseEntity.ok(rep2.getBody());
     }
 

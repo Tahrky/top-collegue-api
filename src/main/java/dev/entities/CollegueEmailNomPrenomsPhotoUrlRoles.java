@@ -9,19 +9,21 @@ import java.util.List;
  *
  * @author BIRABEN-BIANCHI Hugo
  */
-public class CollegueMatriculeNomPrenomsRoles {
-    String matricule;
+public class CollegueEmailNomPrenomsPhotoUrlRoles {
+    String email;
     String nom;
     String prenoms;
+    String photoUrl;
     List<String> roles;
 
-    public CollegueMatriculeNomPrenomsRoles() {}
+    public CollegueEmailNomPrenomsPhotoUrlRoles() {}
 
-    public CollegueMatriculeNomPrenomsRoles(String matricule, String nom, String penoms, List<String> roles) {
+    public CollegueEmailNomPrenomsPhotoUrlRoles(String email, String nom, String penoms, String photoUrl, List<String> roles) {
 	super();
-	this.matricule = matricule;
+	this.email = email;
 	this.nom = nom;
 	this.prenoms = penoms;
+	this.photoUrl = photoUrl;
 	this.roles = roles;
     }
 
@@ -29,15 +31,15 @@ public class CollegueMatriculeNomPrenomsRoles {
      * Getter
      * @return the matricule
      */
-    public String getMatricule() {
-	return matricule;
+    public String getEmail() {
+	return email;
     }
     /**
      * Setter
      * @param matricule the matricule to set
      */
-    public void setMatricule(String matricule) {
-	this.matricule = matricule;
+    public void setEmail(String email) {
+	this.email = email;
     }
     /**
      * Getter
@@ -68,6 +70,22 @@ public class CollegueMatriculeNomPrenomsRoles {
 	this.prenoms = penoms;
     }
     /**
+	 * Getter
+	 * @return the photoUrl
+	 */
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
+
+	/**
+	 * Setter
+	 * @param photoUrl the photoUrl to set
+	 */
+	public void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
+	}
+
+	/**
      * Getter
      * @return the roles
      */
