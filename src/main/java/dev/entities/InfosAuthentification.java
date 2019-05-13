@@ -16,22 +16,22 @@ public class InfosAuthentification {
     private String photoUrl;
 
     /**
-	 * Getter
-	 * @return the photoUrl
-	 */
-	public String getPhotoUrl() {
-		return photoUrl;
-	}
+     * Getter
+     * @return the photoUrl
+     */
+    public String getPhotoUrl() {
+	return photoUrl;
+    }
 
-	/**
-	 * Setter
-	 * @param photoUrl the photoUrl to set
-	 */
-	public void setPhotoUrl(String photoUrl) {
-		this.photoUrl = photoUrl;
-	}
+    /**
+     * Setter
+     * @param photoUrl the photoUrl to set
+     */
+    public void setPhotoUrl(String photoUrl) {
+	this.photoUrl = photoUrl;
+    }
 
-	public String getEmail() {
+    public String getEmail() {
 	return email;
     }
 

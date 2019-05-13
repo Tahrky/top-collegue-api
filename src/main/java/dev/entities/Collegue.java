@@ -33,14 +33,6 @@ public class Collegue {
 	this.photoUrl = photoUrl;
     }
 
-    public Collegue(String matricule, String nom, String prenoms, String email, String photoUrl) {
-	super();
-	this.nom = nom.toLowerCase();
-	this.prenoms = prenoms;
-	this.email = email;
-	this.photoUrl = photoUrl;
-    }
-
     /**
      * Getter
      *
