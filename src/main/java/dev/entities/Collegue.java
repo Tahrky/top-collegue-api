@@ -22,6 +22,9 @@ public class Collegue {
     @Column
     String photoUrl;
 
+    @Column
+    int vote;
+
     public Collegue() {
     }
 
@@ -103,6 +106,14 @@ public class Collegue {
      */
     public void setPhotoUrl(String photoUrl) {
 	this.photoUrl = photoUrl;
+    }
+
+    public int getVote() {
+	return vote;
+    }
+
+    public void setVote(int vote) {
+	this.vote = vote;
     }
 
 }

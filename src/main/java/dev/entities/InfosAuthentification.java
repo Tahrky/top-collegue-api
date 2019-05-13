@@ -3,14 +3,20 @@
  */
 package dev.entities;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
 /**
  *
  * @author BIRABEN-BIANCHI Hugo
  */
 public class InfosAuthentification {
 
+    @NotEmpty
+    @Email
     private String email;
 
+    @NotEmpty
     private String motDePasse;
 
     private String photoUrl;
