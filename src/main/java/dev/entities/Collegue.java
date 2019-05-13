@@ -3,13 +3,9 @@
  */
 package dev.entities;
 
-import java.time.LocalDate;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
 /**
  *
@@ -17,64 +13,32 @@ import javax.persistence.Transient;
  */
 @Entity
 public class Collegue {
-    @Transient
-    static final String TIME_PATTERN = "yyyy-MM-d";
-
     @Id
-    String matricule;
+    String email;
     @Column
     String nom;
     @Column
     String prenoms;
     @Column
-    String email;
-    @Column
     String photoUrl;
-    @Column
-    LocalDate dateDeNaissance;
-
-    @OneToOne (mappedBy="collegue")
-    UtilisateurSession utilisateur;
 
     public Collegue() {
     }
 
-    public Collegue(String nom, String prenoms, String email, String photoUrl, LocalDate dateDeNaissance) {
+    public Collegue(String nom, String prenoms, String email, String photoUrl) {
 	super();
 	this.nom = nom.toLowerCase();
 	this.prenoms = prenoms;
 	this.email = email;
-	this.dateDeNaissance = dateDeNaissance;
 	this.photoUrl = photoUrl;
     }
 
-    public Collegue(String matricule, String nom, String prenoms, String email, String photoUrl,
-	    LocalDate dateDeNaissance) {
+    public Collegue(String matricule, String nom, String prenoms, String email, String photoUrl) {
 	super();
-	this.matricule = matricule;
 	this.nom = nom.toLowerCase();
 	this.prenoms = prenoms;
 	this.email = email;
-	this.dateDeNaissance = dateDeNaissance;
 	this.photoUrl = photoUrl;
-    }
-
-    /**
-     * Getter
-     *
-     * @return the matricule
-     */
-    public String getMatricule() {
-	return matricule;
-    }
-
-    /**
-     * Setter
-     *
-     * @param matricule the matricule to set
-     */
-    public void setMatricule(String matricule) {
-	this.matricule = matricule;
     }
 
     /**
@@ -129,24 +93,6 @@ public class Collegue {
      */
     public void setEmail(String email) {
 	this.email = email;
-    }
-
-    /**
-     * Getter
-     *
-     * @return the dateDeNaissance
-     */
-    public LocalDate getDateDeNaissance() {
-	return dateDeNaissance;
-    }
-
-    /**
-     * Setter
-     *
-     * @param dateDeNaissance the dateDeNaissance to set
-     */
-    public void setDateDeNaissance(LocalDate dateDeNaissance) {
-	this.dateDeNaissance = dateDeNaissance;
     }
 
     /**
