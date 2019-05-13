@@ -45,13 +45,12 @@ public class AuthentificationCtrl {
     // Permet de s'authentifier, en générant un cookie pour maintenir la session en cours
     @PostMapping(value = "/auth")
     public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
-    	HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<InfosAuthentification>(authenticationRequest);
+    	HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<>(authenticationRequest);
 
         RestTemplate rt = new RestTemplate();
-    	ResponseEntity<String> responseFromApi = rt.exchange("https://biraben-collegues-api.herokuapp.com/auth", HttpMethod.POST, requestEntity, String.class);
+    	ResponseEntity<String> responseFromApi = rt.exchange("http://localhost:8081/auth", HttpMethod.POST, requestEntity, String.class);
 
     	String responseHeader = responseFromApi.getHeaders().getFirst("Set-Cookie");
-    	String body = responseFromApi.getBody();
 
     	String[] cookie = responseHeader.split(";");
     	String[] cookie2 = cookie[0].split ("=");
@@ -64,7 +63,7 @@ public class AuthentificationCtrl {
 		response.addCookie(authCookie);
 
 		RequestEntity<?> requestEntity2 = RequestEntity
-											.get(new URI("https://biraben-collegues-api.herokuapp.com/me2"))
+											.get(new URI("http://localhost:8081/me2"))
 											.header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
 											.build();
 
