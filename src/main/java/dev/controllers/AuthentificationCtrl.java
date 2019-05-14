@@ -58,7 +58,6 @@ public class AuthentificationCtrl {
 	@PostMapping(value = "/auth")
 	public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody @Valid InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
 		HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<>(authenticationRequest);
-
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> responseFromApi = rt.exchange("http://localhost:8081/auth", HttpMethod.POST, requestEntity, String.class);
 
