@@ -74,7 +74,7 @@ public class AuthentificationCtrl {
 		response.addCookie(authCookie);
 
 		RequestEntity<?> requestEntity2 = RequestEntity
-				.get(new URI("http://localhost:8081/me2"))
+				.get(new URI("https://biraben-collegues-api.herokuapp.com/me2"))
 				.header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
 				.build();
 
