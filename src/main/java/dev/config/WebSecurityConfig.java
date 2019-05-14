@@ -50,6 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		.antMatchers("/h2-console/**").permitAll()
 		.antMatchers("/auth").permitAll()
+		.antMatchers("/upvote").permitAll()
+		.antMatchers("/downvote").permitAll()
 		.anyRequest().authenticated()
 		.and().headers().frameOptions().disable()
 		.and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

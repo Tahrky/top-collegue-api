@@ -29,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 
 import dev.entities.Collegue;
 import dev.entities.CollegueEmailNomPrenomsPhotoUrlRoles;
-import dev.entities.Email;
 import dev.entities.InfosAuthentification;
 import dev.exception.CollegueNonTrouveException;
 import dev.repository.CollegueRepository;
@@ -91,17 +90,16 @@ public class AuthentificationCtrl {
 	}
 
 	@PatchMapping (value="/upvote")
-	public void upvote (@RequestBody Email email) {
-		System.out.println(email.getEmail());
-		Collegue colCourant = colRepo.findById(email.getEmail()).orElseThrow(CollegueNonTrouveException::new);
-		colCourant.setVote (colCourant.getVote ()+10);
+	public void upvote (@RequestBody String email) {
+		Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
+		colCourant.setVote (colCourant.getVote ()+1);
 		colRepo.save(colCourant);
 	}
 
 	@PatchMapping (value="/downvote")
-	public void downvote (@RequestBody Email email) {
-		Collegue colCourant = colRepo.findById(email.getEmail()).orElseThrow(CollegueNonTrouveException::new);
-		colCourant.setVote (colCourant.getVote ()-10);
+	public void downvote (@RequestBody String email) {
+		Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
+		colCourant.setVote (colCourant.getVote ()-1);
 		colRepo.save(colCourant);
 	}
 
