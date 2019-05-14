@@ -5,6 +5,7 @@ package dev.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -87,6 +88,13 @@ public class AuthentificationCtrl {
 	@GetMapping (value="/collegues")
 	public List <Collegue> getCollegues () {
 		return colRepo.findAll();
+	}
+
+	@GetMapping (value="/classement")
+	public List <Collegue> getClassement () {
+		List <Collegue> tri = colRepo.findAll();
+		Collections.sort (tri);
+		return tri;
 	}
 
 	@PatchMapping (value="/upvote")

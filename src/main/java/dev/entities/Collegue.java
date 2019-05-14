@@ -12,7 +12,7 @@ import javax.persistence.Id;
  * @author BIRABEN-BIANCHI Hugo
  */
 @Entity
-public class Collegue {
+public class Collegue implements Comparable <Collegue>{
 	@Id
 	String email;
 	@Column
@@ -114,6 +114,22 @@ public class Collegue {
 
 	public void setVote(int vote) {
 		this.vote = vote;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Collegue collegue) {
+
+		if (this.vote < collegue.getVote()) {
+			return 1;
+		}
+		else if (this.vote > collegue.getVote()) {
+			return -1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 }
