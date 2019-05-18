@@ -16,6 +16,7 @@ public class NoteDTO {
     public NoteDTO(int id, String email) {
 	super();
 	this.id = id;
+
 	this.email = email;
 	this.date = LocalDateTime.now();
     }
@@ -35,7 +36,6 @@ public class NoteDTO {
     public void setId(int id) {
 	this.id = id;
     }
-
     public int getVote() {
 	return vote;
     }
