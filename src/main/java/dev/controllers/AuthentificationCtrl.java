@@ -30,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import dev.entities.Collegue;
 import dev.entities.CollegueEmailNomPrenomsPhotoUrlRoles;
 import dev.entities.InfosAuthentification;
-import dev.entities.NotesDTO;
+import dev.entities.NoteDTO;
 import dev.exception.CollegueNonTrouveException;
 import dev.repository.CollegueRepository;
 
@@ -42,86 +42,77 @@ import dev.repository.CollegueRepository;
 //@CrossOrigin(origins= {"http://localhost:4200", "https://tahrky.github.io" }, allowCredentials = "true")
 public class AuthentificationCtrl {
 
-	@Value("${jwt.expires_in}")
-	private Integer EXPIRES_IN;
+    @Value("${jwt.expires_in}")
+    private Integer EXPIRES_IN;
 
-	@Value("${jwt.cookie}")
-	private String TOKEN_COOKIE;
+    @Value("${jwt.cookie}")
+    private String TOKEN_COOKIE;
 
-	@Value("${jwt.secret}")
-	private String SECRET;
+    @Value("${jwt.secret}")
+    private String SECRET;
 
-	@Autowired
-	CollegueRepository colRepo;
+    @Autowired
+    CollegueRepository colRepo;
 
-	// Permet de s'authentifier, en générant un cookie pour maintenir la session en cours
-	@PostMapping(value = "/auth")
-	public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody @Valid InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
-		HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<>(authenticationRequest);
-		RestTemplate rt = new RestTemplate();
-		ResponseEntity<String> responseFromApi = rt.exchange("https://biraben-collegues-api.herokuapp.com/auth", HttpMethod.POST, requestEntity, String.class);
+    // Permet de s'authentifier, en générant un cookie pour maintenir la session en cours
+    @PostMapping(value = "/auth")
+    public ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> authenticate(@RequestBody @Valid InfosAuthentification authenticationRequest, HttpServletResponse response) throws URISyntaxException {
+	HttpEntity<InfosAuthentification> requestEntity = new HttpEntity<>(authenticationRequest);
+	RestTemplate rt = new RestTemplate();
+	ResponseEntity<String> responseFromApi = rt.exchange("https://biraben-collegues-api.herokuapp.com/auth", HttpMethod.POST, requestEntity, String.class);
 
-		String responseHeader = responseFromApi.getHeaders().getFirst("Set-Cookie");
+	String responseHeader = responseFromApi.getHeaders().getFirst("Set-Cookie");
 
-		String[] cookie = responseHeader.split(";");
-		String[] cookie2 = cookie[0].split ("=");
-		String token = cookie2[1];
+	String[] cookie = responseHeader.split(";");
+	String[] cookie2 = cookie[0].split ("=");
+	String token = cookie2[1];
 
-		Cookie authCookie = new Cookie(TOKEN_COOKIE, token);
-		authCookie.setHttpOnly(true);
-		authCookie.setMaxAge(EXPIRES_IN * 1000);
-		authCookie.setPath("/");
-		response.addCookie(authCookie);
+	Cookie authCookie = new Cookie(TOKEN_COOKIE, token);
+	authCookie.setHttpOnly(true);
+	authCookie.setMaxAge(EXPIRES_IN * 1000);
+	authCookie.setPath("/");
+	response.addCookie(authCookie);
 
-		RequestEntity<?> requestEntity2 = RequestEntity
-				.get(new URI("https://biraben-collegues-api.herokuapp.com/me2"))
-				.header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
-				.build();
+	RequestEntity<?> requestEntity2 = RequestEntity
+		.get(new URI("https://biraben-collegues-api.herokuapp.com/me2"))
+		.header("Cookie", responseFromApi.getHeaders().getFirst("Set-Cookie"))
+		.build();
 
-		ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
-		CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
-		colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl()));
+	ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
+	CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
+	colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl()));
 
-		return ResponseEntity.ok(col);
-	}
+	return ResponseEntity.ok(col);
+    }
 
-	@GetMapping (value="/collegues")
-	public List <Collegue> getCollegues () {
-		return colRepo.findAll();
-	}
+    @GetMapping (value="/collegues")
+    public List <Collegue> getCollegues () {
+	return colRepo.findAll();
+    }
 
-	@GetMapping (value="/classement")
-	public List <Collegue> getClassement () {
-		List <Collegue> tri = colRepo.findAll();
-		Collections.sort (tri);
-		return tri;
-	}
-
-	@PatchMapping (value="/upvote")
-	public void upvote (@RequestBody String email) {
-		Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
-		colCourant.setVote (colCourant.getVote ()+1);
-		colRepo.save(colCourant);
-	}
-
-    @PostMapping (value="/upvote")
-    public void upvote (@RequestBody NotesDTO email) {
-	Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
-	colCourant.setVote (colCourant.getVote ()+10);
-	colRepo.save(colCourant);
+    @GetMapping (value="/classement")
+    public List <Collegue> getClassement () {
+	List <Collegue> tri = colRepo.findAll();
+	Collections.sort (tri);
+	return tri;
     }
 
     @PostMapping (value="/downvote")
-    public void downvote (@RequestBody NotesDTO email) {
-	Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
-	colCourant.setVote (colCourant.getVote ()-10);
+    public void downvote (@RequestBody NoteDTO note) {
+	Collegue colCourant = colRepo.findById(note.getEmail()).orElseThrow(CollegueNonTrouveException::new);
+	if (note.getVote() == 1) {
+	    colCourant.setVote ();
+	}
+	else if (note.getVote() == 2) {
+	    colCourant.setVote (colCourant.getVote ()-10);
+	}
 	colRepo.save(colCourant);
     }
 
 
-	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity mauvaiseInfosConnexion(BadCredentialsException e) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	}
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity mauvaiseInfosConnexion(BadCredentialsException e) {
+	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 
 }

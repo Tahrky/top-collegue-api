@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class NoteDTO {
 
     int id;
-    int value;
+    int vote;
     LocalDateTime date;
     String email;
 
@@ -13,12 +13,19 @@ public class NoteDTO {
 	this.date = LocalDateTime.now();
     }
 
-    public NoteDTO(int id, int value, String email) {
+    public NoteDTO(int id, String email) {
 	super();
 	this.id = id;
-	this.value = value;
 	this.email = email;
 	this.date = LocalDateTime.now();
+    }
+
+    public NoteDTO(int id, int vote, LocalDateTime date, String email) {
+	super();
+	this.id = id;
+	this.vote = vote;
+	this.date = date;
+	this.email = email;
     }
 
     public int getId() {
@@ -29,12 +36,12 @@ public class NoteDTO {
 	this.id = id;
     }
 
-    public int getValue() {
-	return value;
+    public int getVote() {
+	return vote;
     }
 
-    public void setValue(int value) {
-	this.value = value;
+    public void setVote(int vote) {
+	this.vote = vote;
     }
 
     public LocalDateTime getDate() {
@@ -51,13 +58,5 @@ public class NoteDTO {
 
     public void setEmail(String email) {
 	this.email = email;
-    }
-
-    public boolean isVote() {
-	return vote;
-    }
-
-    public void setVote(boolean vote) {
-	this.vote = vote;
     }
 }
