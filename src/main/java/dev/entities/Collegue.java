@@ -37,6 +37,14 @@ public class Collegue {
 	this.voteTab.add (vote);
     }
 
+    public int somme () {
+	int somme = 0;
+	for (Vote n : voteTab) {
+	    somme += n.getValue();
+	}
+	return somme;
+    }
+
     public Collegue() {
     }
 

@@ -100,7 +100,8 @@ public class AuthentificationCtrl {
     @GetMapping (value="/classement")
     public List <CollegueNomPrenomsPhotoUrlVote> getClassement () {
 	List <Collegue> listeCollegues = colRepo.findAll();
-	List <CollegueNomPrenomsPhotoUrlVote> listeVotes = listeCollegues.stream().map(col -> new CollegueNomPrenomsPhotoUrlVote (col.getNom (), col.getPrenoms(), col.getPhotoUrl(), col.getVoteTab().size())).collect (Collectors.toList ());
+
+	List <CollegueNomPrenomsPhotoUrlVote> listeVotes = listeCollegues.stream().map(col -> new CollegueNomPrenomsPhotoUrlVote (col.getNom (), col.getPrenoms(), col.getPhotoUrl(), col.somme ())).collect (Collectors.toList ());
 	Collections.sort(listeVotes);
 	return listeVotes;
     }
@@ -108,8 +109,8 @@ public class AuthentificationCtrl {
     @PostMapping (value="/vote")
     public void vote (@RequestBody VoteDTO vote) {
 	Collegue colCourant = colRepo.findById(vote.getEmail()).orElseThrow(CollegueNonTrouveException::new);
-	System.out.println(colCourant.getEmail());
 	Vote voteTemp = new Vote (0, colCourant);
+
 	if (vote.getVote() == 1) {
 	    voteTemp.setValue (10);
 	    colCourant.setVote (voteTemp);
