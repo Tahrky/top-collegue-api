@@ -52,12 +52,4 @@ public class NoteDTO {
     public void setEmail(String email) {
 	this.email = email;
     }
-
-    public boolean isVote() {
-	return vote;
-    }
-
-    public void setVote(boolean vote) {
-	this.vote = vote;
-    }
 }
