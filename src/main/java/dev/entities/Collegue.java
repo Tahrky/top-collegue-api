@@ -6,6 +6,7 @@ package dev.entities;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -26,18 +27,34 @@ public class Collegue {
     @Column
     String photoUrl;
 
+    @ElementCollection
+    List <String> roles;
+
     @OneToMany(mappedBy = "collegue")
-    private List<Note> noteTab;
+    private List<Vote> voteTab;
+
+    public void setVote(Vote vote) {
+	this.voteTab.add (vote);
+    }
 
     public Collegue() {
     }
 
-    public Collegue(String nom, String prenoms, String email, String photoUrl) {
+    public Collegue(String email, String nom, String prenoms, String photoUrl) {
 	super();
 	this.nom = nom.toLowerCase();
 	this.prenoms = prenoms;
 	this.email = email;
 	this.photoUrl = photoUrl;
+    }
+
+    public Collegue(String email, String nom, String prenoms, String photoUrl, List <String> roles) {
+	super();
+	this.nom = nom.toLowerCase();
+	this.prenoms = prenoms;
+	this.email = email;
+	this.photoUrl = photoUrl;
+	this.roles = roles;
     }
 
     /**
@@ -112,11 +129,19 @@ public class Collegue {
 	this.photoUrl = photoUrl;
     }
 
-    public List<Note> getNoteTab() {
-	return noteTab;
+    public List<Vote> getVoteTab() {
+	return voteTab;
     }
 
-    public void setNoteTab(List<Note> noteTab) {
-	this.noteTab = noteTab;
+    public List<String> getRoles() {
+	return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+	this.roles = roles;
+    }
+
+    public void setVoteTab(List<Vote> voteTab) {
+	this.voteTab = voteTab;
     }
 }

@@ -2,18 +2,18 @@ package dev.entities;
 
 import java.time.LocalDateTime;
 
-public class NoteDTO {
+public class VoteDTO {
 
     int id;
     int vote;
     LocalDateTime date;
     String email;
 
-    public NoteDTO() {
+    public VoteDTO() {
 	this.date = LocalDateTime.now();
     }
 
-    public NoteDTO(int id, String email) {
+    public VoteDTO(int id, String email) {
 	super();
 	this.id = id;
 
@@ -21,7 +21,7 @@ public class NoteDTO {
 	this.date = LocalDateTime.now();
     }
 
-    public NoteDTO(int id, int vote, LocalDateTime date, String email) {
+    public VoteDTO(int id, int vote, LocalDateTime date, String email) {
 	super();
 	this.id = id;
 	this.vote = vote;

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Note {
+public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +25,12 @@ public class Note {
     @ManyToOne
     Collegue collegue;
 
-    public Note() {
+    public Vote() {
 	this.date = LocalDateTime.now();
     }
 
-    public Note(int id, int value, Collegue collegue) {
+    public Vote(int value, Collegue collegue) {
 	super();
-	this.id = id;
 	this.value = value;
 	this.date = LocalDateTime.now();
 	this.collegue = collegue;

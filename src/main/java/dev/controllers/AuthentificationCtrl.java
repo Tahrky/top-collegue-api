@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -29,10 +30,13 @@ import org.springframework.web.client.RestTemplate;
 
 import dev.entities.Collegue;
 import dev.entities.CollegueEmailNomPrenomsPhotoUrlRoles;
+import dev.entities.CollegueNomPrenomsPhotoUrlVote;
 import dev.entities.InfosAuthentification;
-import dev.entities.NoteDTO;
+import dev.entities.Vote;
+import dev.entities.VoteDTO;
 import dev.exception.CollegueNonTrouveException;
 import dev.repository.CollegueRepository;
+import dev.repository.VoteRepository;
 
 /**
  *
@@ -53,6 +57,9 @@ public class AuthentificationCtrl {
 
     @Autowired
     CollegueRepository colRepo;
+
+    @Autowired
+    VoteRepository voteRepo;
 
     // Permet de s'authentifier, en générant un cookie pour maintenir la session en cours
     @PostMapping(value = "/auth")
@@ -80,32 +87,39 @@ public class AuthentificationCtrl {
 
 	ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
 	CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
-	colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl()));
+	colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl(), col.getRoles()));
 
 	return ResponseEntity.ok(col);
     }
 
     @GetMapping (value="/collegues")
-    public List <Collegue> getCollegues () {
-	return colRepo.findAll();
+    public List <CollegueEmailNomPrenomsPhotoUrlRoles> getCollegues () {
+	return colRepo.findAll().stream ().map(col -> new CollegueEmailNomPrenomsPhotoUrlRoles (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl(), col.getRoles())).collect(Collectors.toList()) ;
     }
 
     @GetMapping (value="/classement")
-    public List <Collegue> getClassement () {
-	List <Collegue> tri = colRepo.findAll();
-	Collections.sort (tri);
-	return tri;
+    public List <CollegueNomPrenomsPhotoUrlVote> getClassement () {
+	List <Collegue> listeCollegues = colRepo.findAll();
+	List <CollegueNomPrenomsPhotoUrlVote> listeVotes = listeCollegues.stream().map(col -> new CollegueNomPrenomsPhotoUrlVote (col.getNom (), col.getPrenoms(), col.getPhotoUrl(), col.getVoteTab().size())).collect (Collectors.toList ());
+	Collections.sort(listeVotes);
+	return listeVotes;
     }
 
-    @PostMapping (value="/downvote")
-    public void downvote (@RequestBody NoteDTO note) {
-	Collegue colCourant = colRepo.findById(note.getEmail()).orElseThrow(CollegueNonTrouveException::new);
-	if (note.getVote() == 1) {
-	    colCourant.setVote ();
+    @PostMapping (value="/vote")
+    public void vote (@RequestBody VoteDTO vote) {
+	Collegue colCourant = colRepo.findById(vote.getEmail()).orElseThrow(CollegueNonTrouveException::new);
+	System.out.println(colCourant.getEmail());
+	Vote voteTemp = new Vote (0, colCourant);
+	if (vote.getVote() == 1) {
+	    voteTemp.setValue (10);
+	    colCourant.setVote (voteTemp);
 	}
-	else if (note.getVote() == 2) {
-	    colCourant.setVote (colCourant.getVote ()-10);
+	else if (vote.getVote() == 2) {
+	    voteTemp.setValue (-10);
+	    colCourant.setVote (voteTemp);
 	}
+
+	voteRepo.save(voteTemp);
 	colRepo.save(colCourant);
     }
 
