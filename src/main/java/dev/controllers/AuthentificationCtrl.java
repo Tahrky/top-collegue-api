@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import dev.entities.Collegue;
 import dev.entities.CollegueEmailNomPrenomsPhotoUrlRoles;
 import dev.entities.InfosAuthentification;
+import dev.entities.NotesDTO;
 import dev.exception.CollegueNonTrouveException;
 import dev.repository.CollegueRepository;
 
@@ -104,13 +104,19 @@ public class AuthentificationCtrl {
 		colRepo.save(colCourant);
 	}
 
-	@PatchMapping (value="/downvote")
-	public void downvote (@RequestBody String email) {
-		Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
-		colCourant.setVote (colCourant.getVote ()-1);
-		colRepo.save(colCourant);
-	}
+    @PostMapping (value="/upvote")
+    public void upvote (@RequestBody NotesDTO email) {
+	Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
+	colCourant.setVote (colCourant.getVote ()+10);
+	colRepo.save(colCourant);
+    }
 
+    @PostMapping (value="/downvote")
+    public void downvote (@RequestBody NotesDTO email) {
+	Collegue colCourant = colRepo.findById(email).orElseThrow(CollegueNonTrouveException::new);
+	colCourant.setVote (colCourant.getVote ()-10);
+	colRepo.save(colCourant);
+    }
 
 
 	@ExceptionHandler(BadCredentialsException.class)
