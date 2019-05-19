@@ -89,6 +89,13 @@ public class AuthentificationCtrl {
 	CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
 	colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl(), col.getRoles()));
 
+	if (authenticationRequest.getPhotoUrl () != null && authenticationRequest.getPhotoUrl ().length() > 0 )
+	{
+	    Collegue collegue = colRepo.findByEmail(authenticationRequest.getEmail());
+	    collegue.setPhotoUrl(authenticationRequest.getPhotoUrl ());
+	    colRepo.save(collegue);
+	}
+
 	return ResponseEntity.ok(col);
     }
 
