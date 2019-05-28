@@ -87,13 +87,12 @@ public class AuthentificationCtrl {
 
 	ResponseEntity<CollegueEmailNomPrenomsPhotoUrlRoles> rep2 = rt.exchange(requestEntity2, CollegueEmailNomPrenomsPhotoUrlRoles.class);
 	CollegueEmailNomPrenomsPhotoUrlRoles col = rep2.getBody();
-	colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl(), col.getRoles()));
 
-	if (authenticationRequest.getPhotoUrl () != null && authenticationRequest.getPhotoUrl ().length() > 0 )
-	{
-	    Collegue collegue = colRepo.findByEmail(authenticationRequest.getEmail());
-	    collegue.setPhotoUrl(authenticationRequest.getPhotoUrl ());
-	    colRepo.save(collegue);
+	if (authenticationRequest.getPhotoUrl () != null && authenticationRequest.getPhotoUrl ().length() > 0 ) {
+	    colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), authenticationRequest.getPhotoUrl (), col.getRoles()));
+	}
+	else {
+	    colRepo.save(new Collegue (col.getEmail(), col.getNom(), col.getPrenoms(), col.getPhotoUrl(), col.getRoles()));
 	}
 
 	return ResponseEntity.ok(col);
